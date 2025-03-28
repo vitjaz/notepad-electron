@@ -1,0 +1,38 @@
+{
+  "name": "notepad-electron",
+  "version": "0.0.1",
+  "main": "dist/main/main.js",
+  "devDependencies": {
+    "@types/node": "^22.13.14",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/compiler-sfc": "^3.5.13",
+    "concurrently": "^9.1.2",
+    "electron": "^35.1.2",
+    "electron-builder": "^26.0.12",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.3",
+    "vite-plugin-electron": "^0.29.0"
+  },
+  "dependencies": {
+    "pinia": "^2.0.0",
+    "vue": "^3.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run build:renderer && npm run build:main",
+    "build:renderer": "vite build",
+    "build:main": "tsc src/main/main.ts src/main/preload.ts --outDir dist/main --esModuleInterop",
+    "start": "electron .",
+    "package": "electron-builder"
+  },
+  "keywords": [],
+  "author": "Vitaly Alexeev",
+  "license": "ISC",
+  "description": "",
+  "build": {
+    "files": [
+      "dist/**/*",
+      "!dist/**/*.map"
+    ]
+  }
+}
