@@ -6,13 +6,13 @@ let mainWindow: BrowserWindow | null = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 1024,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       nodeIntegration: false,
-      devTools: true,
+      devTools: false,
     },
   });
 
@@ -58,7 +58,6 @@ ipcMain.handle("open-file", async () => {
   });
 
   if (!result.canceled && result.filePaths.length > 0) {
-    console.log("result 123", result.filePaths[0]);
     return result.filePaths[0];
   }
   return null;

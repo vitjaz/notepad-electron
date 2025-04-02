@@ -1,6 +1,6 @@
 {
   "name": "notepad-electron",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/main/main.js",
   "devDependencies": {
     "@types/node": "^22.13.14",
@@ -14,6 +14,7 @@
     "vite-plugin-electron": "^0.29.0"
   },
   "dependencies": {
+    "element-plus": "^2.9.7",
     "pinia": "^2.0.0",
     "vue": "^3.0.0"
   },

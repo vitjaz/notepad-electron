@@ -1,9 +1,9 @@
 <template>
   <div class="app">
     <div class="menu-bar">
-      <button @click="openFile">Open</button>
-      <button @click="saveFile" :disabled="!activeTab">Save</button>
-      <button @click="saveAsFile" :disabled="!activeTab">Save as...</button>
+      <ElButton @click="openFile">Open</ElButton>
+      <ElButton @click="saveFile" :disabled="!activeTab">Save</ElButton>
+      <ElButton @click="saveAsFile" :disabled="!activeTab">Save as...</ElButton>
     </div>
     <TabBar />
     <Editor />
@@ -11,6 +11,7 @@
 </template>
 
 <script setup lang="ts">
+import { ElButton } from "element-plus";
 import TabBar from "./components/TabBar.vue";
 import Editor from "./components/Editor.vue";
 import { useTabsStore } from "./store/tabs";
@@ -19,13 +20,13 @@ import { useElectronApi } from "./composables/useElectronApi";
 import { computed } from "vue";
 
 const tabsStore = useTabsStore();
-const { activeTabId, tabs } = storeToRefs(tabsStore);
-const { addNewTab, openFileInTab } = tabsStore;
+const { activeTabName, tabs } = storeToRefs(tabsStore);
+const { openFileInTab } = tabsStore;
 
 const electronApi = useElectronApi();
 
 const activeTab = computed(() =>
-  tabsStore.tabs.find((tab) => tab.id === activeTabId.value)
+  tabs.value.find((tab) => tab.name === activeTabName.value)
 );
 const openFile = async () => {
   try {
@@ -42,7 +43,7 @@ const openFile = async () => {
 };
 
 const saveFile = async () => {
-  if (!activeTabId.value || !activeTab.value) return;
+  if (!activeTabName.value || !activeTab.value) return;
 
   try {
     const filePath = activeTab.value.filePath;
@@ -70,16 +71,6 @@ const saveAsFile = async () => {
 </script>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Arial, sans-serif;
-}
-
 .app {
   display: flex;
   flex-direction: column;
@@ -89,12 +80,5 @@ body {
 
 .menu-bar {
   padding: 5px;
-  background: #f0f0f0;
-  border-bottom: 1px solid #ccc;
-}
-
-.menu-bar button {
-  margin-right: 5px;
-  padding: 3px 10px;
 }
 </style>

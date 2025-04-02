@@ -1,49 +1,55 @@
+import { TabPaneName } from "element-plus";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
 interface Tab {
   id: string;
   title: string;
+  name: number; // tab id from element plus
   content: string;
   filePath?: string;
   isDirty: boolean;
 }
 
+let tabIndex = 0;
+
 export const useTabsStore = defineStore("tabs", () => {
   const tabs = ref<Tab[]>([]);
-  const activeTabId = ref<string | null>(null);
+  const activeTabName = ref(0);
 
   const addNewTab = () => {
+    const name = ++tabIndex;
     const newTab: Tab = {
       id: `tab-${Date.now()}`,
-      title: "Новый файл",
+      title: "New file",
       content: "",
+      name,
       isDirty: false,
     };
 
     tabs.value.push(newTab);
-    activeTabId.value = newTab.id;
+    activeTabName.value = newTab.name;
     return newTab;
   };
 
-  const closeTab = (tabId: string) => {
-    const index = tabs.value.findIndex((tab) => tab.id === tabId);
+  const closeTab = (tabName: TabPaneName) => {
+    const index = tabs.value.findIndex((tab) => tab.name === tabName);
     if (index !== -1) {
       tabs.value.splice(index, 1);
 
-      if (activeTabId.value === tabId) {
-        activeTabId.value =
-          tabs.value.length > 0 ? tabs.value[Math.max(0, index - 1)].id : null;
+      if (activeTabName.value === tabName) {
+        activeTabName.value =
+          tabs.value.length > 0 ? tabs.value[Math.max(0, index - 1)].name : 0;
       }
     }
   };
 
-  const setActiveTab = (tabId: string) => {
-    activeTabId.value = tabId;
+  const setActiveTab = (tabName: number) => {
+    activeTabName.value = tabName;
   };
 
-  const updateTabContent = (tabId: string, content: string) => {
-    const tab = tabs.value.find((t) => t.id === tabId);
+  const updateTabContent = (tabName: number, content: string) => {
+    const tab = tabs.value.find((t) => t.name === tabName);
     if (tab) {
       tab.content = content;
       tab.isDirty = true;
@@ -58,16 +64,17 @@ export const useTabsStore = defineStore("tabs", () => {
       title: fileName,
       content,
       filePath,
+      name: ++tabIndex,
       isDirty: false,
     };
 
     tabs.value.push(newTab);
-    activeTabId.value = newTab.id;
+    activeTabName.value = newTab.name;
   };
 
   return {
     tabs,
-    activeTabId,
+    activeTabName,
     addNewTab,
     closeTab,
     setActiveTab,

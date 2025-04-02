@@ -9,7 +9,9 @@
     ></textarea>
     <div v-else class="empty-state">
       <p>No open files</p>
-      <button @click="addNewTab">Create new file</button>
+      <ElButton type="success" plain @click="addNewTab"
+        >Create new file</ElButton
+      >
     </div>
   </div>
 </template>
@@ -18,18 +20,19 @@
 import { computed } from "vue";
 import { useTabsStore } from "../store/tabs";
 import { storeToRefs } from "pinia";
+import { ElButton } from "element-plus";
 
 const tabsStore = useTabsStore();
-const { activeTabId, tabs } = storeToRefs(tabsStore);
+const { activeTabName, tabs } = storeToRefs(tabsStore);
 const { addNewTab, updateTabContent } = tabsStore;
 
 const activeTab = computed(() =>
-  tabsStore.tabs.find((tab) => tab.id === activeTabId.value)
+  tabsStore.tabs.find((tab) => tab.name === activeTabName.value)
 );
 const handleInput = (e: Event) => {
-  if (activeTabId.value) {
+  if (activeTabName.value) {
     updateTabContent(
-      activeTabId.value,
+      activeTabName.value,
       (e.target as HTMLTextAreaElement).value
     );
   }
@@ -46,8 +49,8 @@ const handleInput = (e: Event) => {
 .editor {
   flex: 1;
   border: none;
-  padding: 10px;
-  font-family: "Consolas", "Monaco", monospace;
+  padding: 5px;
+  /* font-family: "Consolas", "Monaco", monospace; */
   font-size: 14px;
   line-height: 1.5;
   resize: none;
@@ -62,6 +65,6 @@ const handleInput = (e: Event) => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: #666;
+  gap: 0.5rem;
 }
 </style>
