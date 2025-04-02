@@ -7,12 +7,12 @@ let mainWindow: BrowserWindow | null = null;
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1024,
-    height: 1024,
+    height: 800,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       nodeIntegration: false,
-      devTools: false,
+      devTools: process.env.NODE_ENV === "development" ? true : false,
     },
   });
 
@@ -74,6 +74,32 @@ ipcMain.handle("read-file", async (_, filePath) => {
 
 ipcMain.handle("save-file", async (_, { filePath, content }) => {
   try {
+    await fs.writeFile(filePath, content);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+});
+
+ipcMain.handle("save-as-file", async (_, content) => {
+  try {
+    const result = await dialog.showSaveDialog({
+      title: "Save as",
+      defaultPath: path.join(app.getPath("documents"), "new_file.txt"),
+      filters: [
+        {
+          name: "Text Files",
+          extensions: ["txt", "text", "md", "json", "js", "ts", "html", "css"],
+        },
+        { name: "All Files", extensions: ["*"] },
+      ],
+    });
+
+    if (result.canceled) {
+      return;
+    }
+
+    const filePath = result.filePath;
     await fs.writeFile(filePath, content);
     return { success: true };
   } catch (error) {

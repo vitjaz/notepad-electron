@@ -28,6 +28,7 @@ const electronApi = useElectronApi();
 const activeTab = computed(() =>
   tabs.value.find((tab) => tab.name === activeTabName.value)
 );
+
 const openFile = async () => {
   try {
     const filePath = await electronApi.openFile();
@@ -47,7 +48,6 @@ const saveFile = async () => {
 
   try {
     const filePath = activeTab.value.filePath;
-    // todo
     if (!filePath) {
       await saveAsFile();
       return;
@@ -64,20 +64,42 @@ const saveFile = async () => {
       });
     } else {
       ElMessage.error({
-        message: "File can't be save!",
+        message: "The file cannot be saved!",
       });
     }
-  } catch (error) {
-    console.error("Error while saving file:", error);
+  } catch (err) {
+    console.error("Error while saving file:", err);
     ElMessage.error({
-      message: `${error}`,
+      message: `${err}`,
     });
   }
 };
 
 const saveAsFile = async () => {
-  // todo
-  console.log("Save As...");
+  if (!activeTabName.value || !activeTab.value) return;
+
+  try {
+    const result = await electronApi.saveAsFile(activeTab.value.content);
+
+    if (!result) {
+      // dialog canceled
+      return;
+    }
+    if (result.success) {
+      ElMessage.success({
+        message: "File saved!",
+      });
+    } else {
+      ElMessage.error({
+        message: "The file cannot be saved!",
+      });
+    }
+  } catch (err) {
+    console.error("Error while saving file:", err);
+    ElMessage.error({
+      message: `${err}`,
+    });
+  }
 };
 </script>
 

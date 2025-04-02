@@ -7,6 +7,9 @@ export interface ElectronAPI {
   readFile: (
     filePath: string
   ) => Promise<{ success: boolean; content?: string; error?: string }>;
+  saveAsFile: (
+    content: string
+  ) => Promise<{ success: boolean; error?: string }>;
 }
 
 declare global {

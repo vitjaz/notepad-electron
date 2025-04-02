@@ -6,6 +6,7 @@ export function useElectronApi() {
   return readonly({
     openFile: api.openFile,
     saveFile: api.saveFile,
+    saveAsFile: api.saveAsFile,
     readFile: api.readFile,
   });
 }
