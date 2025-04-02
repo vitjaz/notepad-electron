@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ElButton } from "element-plus";
+import { ElButton, ElMessage } from "element-plus";
 import TabBar from "./components/TabBar.vue";
 import Editor from "./components/Editor.vue";
 import { useTabsStore } from "./store/tabs";
@@ -47,6 +47,7 @@ const saveFile = async () => {
 
   try {
     const filePath = activeTab.value.filePath;
+    // todo
     if (!filePath) {
       await saveAsFile();
       return;
@@ -58,9 +59,19 @@ const saveFile = async () => {
     );
     if (result.success) {
       activeTab.value.isDirty = false;
+      ElMessage.success({
+        message: "File saved!",
+      });
+    } else {
+      ElMessage.error({
+        message: "File can't be save!",
+      });
     }
   } catch (error) {
     console.error("Error while saving file:", error);
+    ElMessage.error({
+      message: `${error}`,
+    });
   }
 };
 
